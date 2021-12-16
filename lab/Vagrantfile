@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby  :
+
+Vagrant.configure("2") do |config|
+  config.vm.provision "shell", inline: "echo Inicializado com sucesso"
+  config.vm.define "server1" do |server1|
+    server1.vm.provider "virtualbox"
+    server1.vm.box = "ubuntu/focal64"
+    server1.vm.network "forwarded_port", guest: 80, host: 8080
+    server1.vm.network "private_network", ip: "192.168.50.100"
+    server1.vm.provision "shell", inline: "sudo apt update && sudo apt install nginx htop -y"
+  end
+   config.vm.define "server2", autostart: true do |server2|
+     server2.vm.provider "virtualbox"   
+     server2.vm.box = "ubuntu/focal64"  
+     server2.vm.network "private_network", ip: "192.168.50.101"
+     server2.vm.provision "shell", inline: "sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release htop -y"
+     server2.vm.provision "shell", inline: "curl -fsSL https://get.docker.com -o get-docker.sh"
+     server2.vm.provision "shell", inline: "sudo sh get-docker.sh"
+     server2.vm.provision "shell", inline: "sudo systemctl start docker && sudo systemctl enable docker"
+  end
+   config.vm.define "server3", autostart: true do |server3|
+    server3.vm.provider "virtualbox"   
+    server3.vm.box = "ubuntu/focal64"  
+    server3.vm.network "private_network", ip: "192.168.50.102"
+  end
+end
+
+
+### Executar o comando: vagrant plugin install vagrant-vbguest, para erro: mount VirtualBox shared folders ###
+
+
+
+
